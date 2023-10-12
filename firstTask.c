@@ -7,8 +7,37 @@ struct User {
     char passWord[50];
 };
 
-struct User users[100];
+struct User users[100]; 
 ll usersCnt = 0;
+
+// Function to save user data to a file
+void saveUserData() {
+    FILE *file = fopen("userdata.txt", "w");
+    if (file == NULL) {
+        printf("Error opening file for writing\n");
+        return;
+    }
+
+    for (ll i = 0; i < usersCnt; i++) {
+        fprintf(file, "%s %s\n", users[i].userName, users[i].passWord);
+    }
+
+    fclose(file);
+}
+
+// Function to load user data from a file
+void loadUserData() {
+    FILE *file = fopen("userdata.txt", "r");
+    if (file == NULL) {
+        return; 
+    }
+
+    while (fscanf(file, "%s %s", users[usersCnt].userName, users[usersCnt].passWord) == 2) {
+        usersCnt++;
+    }
+
+    fclose(file);
+}
 
 void userRegister() {
     if (usersCnt >= 100) {
@@ -21,6 +50,8 @@ void userRegister() {
     printf("\nEnter your password: ");
     scanf("%s", users[usersCnt].passWord);
     usersCnt++;
+
+    saveUserData();
 
     printf("Registered successfully\n");
 }
@@ -43,6 +74,8 @@ void userLogin() {
 }
 
 int main() {
+    loadUserData();
+
     printf("Welcome, sir\nPress 1 to register\nPress 2 to login\n");
     ll choesed = 0;
     scanf("%lld", &choesed);
